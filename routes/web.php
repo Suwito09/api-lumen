@@ -13,9 +13,9 @@
 |
 */
 
-//$router->get('/', function () use ($router) {
-//    return $router->app->version();
-//});
+$router->get('/routes', function () use ($router) {
+    return $router->getRoutes();
+});
 
 $router->get('/', function () {
     return view('home');
@@ -34,39 +34,25 @@ $router->get('/admin/login', function () {
 });
 
 $router->group(['prefix' => 'admin'], function () use ($router) {
-
-    // Login admin (tanpa middleware)
-    $router->post('login', 'AdminController@login');
-
-    // Dashboard tanpa middleware (untuk testing, bisa dipindah ke bawah kalau mau pakai middleware)
-    $router->get('dashboard', function () {
-        return view('admin.dashboard');
-    });
-
-    // Rute yang butuh autentikasi admin
     $router->group(['middleware' => 'auth.admin'], function () use ($router) {
+        $router->post('login', 'AdminController@login');
+        $router->get('dashboard', function () {
+            return view('admin.dashboard');
+        });
         $router->post('wisata/tambah', 'AdminController@tambahTempat');
         $router->get('wisata/semua', 'AdminController@getSemuaWisata');
-        $router->put('wisata/update/{id}', 'AdminController@updateWisata');
-        $router->delete('wisata/hapus/{id}', 'AdminController@hapusWisata');
+        $router->put('wisata/update/{id}', 'AdminController@updateTempat');
+        $router->delete('wisata/hapus/{id}', 'AdminController@deleteTempat');
     });
 });
 
 $router->group(['prefix' => 'pengguna'], function () use ($router) {
+    
     $router->post('register', 'PenggunaController@register');
     $router->post('login', 'PenggunaController@login');
 
     $router->group(['middleware' => 'apikey'], function () use ($router) {
         $router->get('wisata', 'WisataController@index');
-        $router->get('wisata/jenis', 'WisataController@byJenis');
         $router->get('wisata/cari/{nama}', 'WisataController@cari'); 
-        $router->get('wisata/peta', 'WisataController@lokasiPeta');
     });
 });
-
-$router->get('/wisata', 'WisataController@index');
-//$router->get('/wisata/jenis', 'WisataController@byJenis');
-$router->get('/wisata/cari/{nama}', 'WisataController@cari');
-$router->get('/wisata/lokasi', 'WisataController@lokasi');
-
-

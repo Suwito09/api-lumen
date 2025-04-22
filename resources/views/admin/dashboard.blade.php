@@ -5,7 +5,11 @@
     <h2 class="mb-4">Dashboard Admin - Data Tempat Wisata</h2>
 
     <!-- Tombol Tambah -->
-    <button class="btn btn-success mb-3" onclick="showTambahModal()">+ Tambah Wisata</button>
+    <div class="d-flex justify-content-between mb-3 w-100">
+    <button class="btn btn-success" onclick="showTambahModal()">+ Tambah Wisata</button>
+    <button class="btn btn-danger" onclick="logout()">Log Out</button>
+    </div>
+
 
     <!-- Tabel Data Wisata -->
     <table class="table table-bordered table-striped">
@@ -145,6 +149,13 @@
         });
     }
 
+    function logout() {
+    localStorage.removeItem("admin_token");
+    alert("Anda berhasil logout.");
+    window.location.href = "login";
+}
+
+
     function hapusWisata(id) {
         if (confirm("Yakin ingin menghapus?")) {
             fetch(`http://localhost:8000/admin/wisata/hapus/${id}`, {
@@ -162,14 +173,8 @@
     }
 
     function editWisata(w) {
-        document.getElementById("wisataId").value = w.id;
-        document.getElementById("nama").value = w.nama;
-        document.getElementById("deskripsi").value = w.deskripsi;
-        document.getElementById("jenis").value = w.jenis;
-        document.getElementById("alamat").value = w.alamat;
-        document.getElementById("latitude").value = w.latitude;
-        document.getElementById("longitude").value = w.longitude;
-        showTambahModal();
+        console.log(w);
+        showEditModal(w);
     }
 
     function getFormData() {
@@ -186,6 +191,18 @@
     function showTambahModal() {
         document.getElementById("wisataForm").reset();
         document.getElementById("wisataId").value = "";
+        const modal = new bootstrap.Modal(document.getElementById('wisataModal'));
+        modal.show();
+    }
+
+    function showEditModal(w) {
+        document.getElementById("wisataId").value = w.id;
+        document.getElementById("nama").value = w.nama;
+        document.getElementById("deskripsi").value = w.deskripsi;
+        document.getElementById("jenis").value = w.jenis;
+        document.getElementById("alamat").value = w.alamat;
+        document.getElementById("latitude").value = w.latitude;
+        document.getElementById("longitude").value = w.longitude;
         const modal = new bootstrap.Modal(document.getElementById('wisataModal'));
         modal.show();
     }

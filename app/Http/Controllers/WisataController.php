@@ -21,6 +21,14 @@ class WisataController extends Controller
             Wisata::whereRaw('LOWER(jenis) = ?', [strtolower($jenis)])->get()
         );
     }
+
+        public function logout(Request $request)
+    {
+        $token = $request->bearerToken();
+
+
+        return response()->json(['message' => 'Logout berhasil']);
+    }   
     
      
 

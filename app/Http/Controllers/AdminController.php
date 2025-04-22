@@ -52,9 +52,54 @@ class AdminController extends Controller
         return response()->json(['message' => 'Tempat wisata berhasil ditambahkan']);
     }
 
+    public function deleteTempat($id)
+{
+    $tempat = Wisata::find($id);
+
+    if (!$tempat) {
+        return response()->json(['message' => 'Tempat wisata tidak ditemukan'], 404);
+    }
+
+    $tempat->delete();
+
+    return response()->json(['message' => 'Tempat wisata berhasil dihapus']);
+}
+
+    public function updateTempat($id, Request $request)
+{
+    $this->validate($request, [
+        'nama' => 'required',
+        'deskripsi' => 'required',
+        'jenis' => 'required',
+        'alamat' => 'required',
+        'latitude' => 'required',
+        'longitude' => 'required',
+    ]);
+
+    $tempat = Wisata::find($id);
+
+    if (!$tempat) {
+        return response()->json(['message' => 'Tempat wisata tidak ditemukan'], 404);
+    }
+
+    $tempat->update($request->all());
+
+    return response()->json(['message' => 'Tempat wisata berhasil diperbarui']);
+}
+
+
     // Lihat semua wisata
     public function getSemuaWisata()
     {
         return response()->json(Wisata::all());
     }
+
+    public function logout(Request $request)
+{
+    $token = $request->bearerToken();
+
+
+    return response()->json(['message' => 'Logout berhasil']);
+}
+
 }
